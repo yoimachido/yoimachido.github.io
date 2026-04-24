@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EntryCard from '../components/EntryCard.astro';
+import { copy } from '../copy/ja';
+import { getCollection } from 'astro:content';
+
+const works = await getCollection('works', ({ data }) => !data.draft);
+const labs = await getCollection('labs', ({ data }) => !data.draft);
+const notes = await getCollection('notes', ({ data }) => !data.draft);
+
+type Kind = 'works' | 'labs' | 'notes';
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+const items = [
+  ...works.map(e => ({ id: e.id, kind: 'works' as Kind, title: e.data.title, pubDate: e.data.pubDate })),
+  ...labs.map(e => ({ id: e.id, kind: 'labs' as Kind, title: e.data.title, pubDate: e.data.pubDate })),
+  ...notes.map(e => ({ id: e.id, kind: 'notes' as Kind, title: e.data.title, pubDate: e.data.pubDate })),
+]
+  .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
+  .slice(0, 6);
+---
+<BaseLayout>
+  <section style="padding-block: var(--space-hero-y) var(--space-section-y);">
+    <p class="mono" style="margin: 0 0 0.75rem; letter-spacing: 0.08em;">
+      <span class="lantern-dot"></span>yoimachido
+    </p>
+    <h1 style="font-size: clamp(1.875rem, 4vw, 2.5rem); margin: 0 0 0.5rem;">
+      {copy.heroLead}
+    </h1>
+    <p style="color: var(--color-muted); max-width: var(--reading-max);">
+      {copy.tagline}
+    </p>
+  </section>
+
+  <section style="padding-block: var(--space-section-y);">
+    <h2 style="margin-bottom: 1rem;">{copy.latest}</h2>
+    {items.length === 0 ? (
+      <p class="mono" style="color: var(--color-subtle);">
+        まだ点いていません。
+      </p>
+    ) : (
+      <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+        {items.map(it => (
+          <EntryCard
+            href={`/${it.kind}/${it.id}/`}
+            kind={it.kind}
+            title={it.title}
+            meta={fmt(it.pubDate)}
+          />
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>

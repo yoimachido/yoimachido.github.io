@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EmptyState from '../../components/EmptyState.astro';
+import { copy } from '../../copy/ja';
+---
+<BaseLayout title={`${copy.shelfLabel} — 宵町堂`}>
+  <section style="padding-block: var(--space-section-y); max-width: var(--reading-max);">
+    <p class="mono" style="margin: 0 0 0.75rem; letter-spacing: 0.08em; color: var(--color-subtle);">
+      {copy.shelfShort}
+    </p>
+    <h1 style="margin: 0 0 1rem;">{copy.shelfLabel}</h1>
+    <p style="color: var(--color-muted);">
+      いま気になっているもの、いつか取り出したいものを、小さく陳列する場所。
+    </p>
+  </section>
+
+  <section style="padding-block: var(--space-section-y);">
+    <EmptyState title={copy.emptyShelf.title} sub={copy.emptyShelf.sub} />
+  </section>
+</BaseLayout>

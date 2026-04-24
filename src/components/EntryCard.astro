@@ -1,0 +1,31 @@
+---
+interface Props {
+  href: string;
+  kind: string;     // "works" | "labs" | "notes"
+  title: string;
+  meta?: string;    // 例: "短編 / 2026.04"
+}
+
+const { href, kind, title, meta } = Astro.props;
+---
+<a
+  href={href}
+  style="
+    display: block;
+    border: 0.5px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.875rem 1rem;
+    background: var(--color-surface);
+  "
+>
+  <p
+    class="mono"
+    style="margin: 0 0 0.375rem; text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--color-subtle);"
+  >
+    {kind}
+  </p>
+  <p style="margin: 0 0 0.25rem; font-size: 0.9375rem; color: var(--color-ink);">
+    {title}
+  </p>
+  {meta && <p class="mono" style="margin: 0;">{meta}</p>}
+</a>
