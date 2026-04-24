@@ -1,0 +1,32 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = '宵町堂 / yoimachido',
+  description = '作品・実験・記録を併置する母艦',
+} = Astro.props;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {/* favicon は未作成のため Day 1 では link を出さない */}
+  </head>
+  <body>
+    <SiteHeader />
+    <main class="container" style="padding-block: var(--space-section-y);">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>
