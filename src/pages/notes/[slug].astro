@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { copy } from '../../copy/ja';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('notes', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, description, pubDate, updatedDate, tags, kind } = entry.data;
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<BaseLayout title={`${title} — 宵町堂`} description={description ?? title}>
+  <article style="padding-block: var(--space-section-y); max-width: var(--reading-max);">
+    <header style="margin-bottom: 2rem;">
+      <p class="mono" style="margin: 0 0 0.75rem; letter-spacing: 0.08em; color: var(--color-subtle);">
+        notes / {kind}
+      </p>
+      <h1 style="margin: 0 0 0.5rem;">{title}</h1>
+      <p class="mono" style="margin: 0; color: var(--color-subtle);">
+        {fmt(pubDate)}{updatedDate ? ` · updated ${fmt(updatedDate)}` : ''}
+      </p>
+    </header>
+
+    <div>
+      <Content />
+    </div>
+
+    {tags.length > 0 && (
+      <footer
+        class="mono"
+        style="margin-top: 2rem; padding-top: 1rem; border-top: 0.5px solid var(--color-border); color: var(--color-subtle);"
+      >
+        {tags.map((t) => <span style="margin-right: 0.75rem;">#{t}</span>)}
+      </footer>
+    )}
+
+    <aside
+      style="margin-top: 3rem; text-align: center; letter-spacing: 0.22em; color: var(--color-muted); font-size: 0.875rem;"
+    >
+      <a href="/shelf/">— {copy.shelfShort} —</a>
+    </aside>
+  </article>
+</BaseLayout>
