@@ -39,7 +39,7 @@
   --reading-max: 36rem;
 }
 
-/* ダークモードは案A配色を切替用として仕込むのみ（Day 1 では UI は出さない） */
+/* ダークモードは案A配色を切替用として仕込むのみ（Step 1 では UI は出さない） */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: #13151f;
