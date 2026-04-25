@@ -11,16 +11,18 @@ const base = z.object({
 });
 
 const works = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/works' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/works' }),
   schema: base.extend({
     category: z.enum(['short-story', 'visual', 'web', 'zine', 'other']).default('other'),
+    series: z.string().optional(),
+    seriesKey: z.string().optional(),
     thumbnail: z.string().optional(),
     year: z.number().optional(),
   }),
 });
 
 const labs = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/labs' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/labs' }),
   schema: base.extend({
     stack: z.array(z.string()).default([]),
     status: z.enum(['wip', 'live', 'archived']).default('wip'),
@@ -30,7 +32,7 @@ const labs = defineCollection({
 });
 
 const notes = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
+  loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
   schema: base.extend({
     kind: z.enum(['devlog', 'adr', 'design-log', 'article-seed', 'misc']).default('misc'),
     sourceDoc: z.string().optional(),
