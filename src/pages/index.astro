@@ -12,9 +12,9 @@ type Kind = 'works' | 'labs' | 'notes';
 const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
 
 const items = [
-  ...works.map(e => ({ id: e.id, kind: 'works' as Kind, title: e.data.title, pubDate: e.data.pubDate })),
-  ...labs.map(e => ({ id: e.id, kind: 'labs' as Kind, title: e.data.title, pubDate: e.data.pubDate })),
-  ...notes.map(e => ({ id: e.id, kind: 'notes' as Kind, title: e.data.title, pubDate: e.data.pubDate })),
+  ...works.map(e => ({ id: e.id, kind: 'works' as Kind, title: e.data.title, description: e.data.description, pubDate: e.data.pubDate })),
+  ...labs.map(e => ({ id: e.id, kind: 'labs' as Kind, title: e.data.title, description: e.data.description, pubDate: e.data.pubDate })),
+  ...notes.map(e => ({ id: e.id, kind: 'notes' as Kind, title: e.data.title, description: e.data.description, pubDate: e.data.pubDate })),
 ]
   .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
   .slice(0, 6);
@@ -45,6 +45,7 @@ const items = [
             href={`/${it.kind}/${it.id}/`}
             kind={it.kind}
             title={it.title}
+            description={it.description}
             meta={fmt(it.pubDate)}
           />
         ))}

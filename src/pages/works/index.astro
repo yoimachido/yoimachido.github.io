@@ -8,7 +8,8 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('works', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
-const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 ---
 <BaseLayout title="Works — 宵町堂">
   <section style="padding-block: var(--space-section-y);">
@@ -28,6 +29,7 @@ const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart
             href={`/works/${e.id}/`}
             kind="works"
             title={e.data.title}
+            description={e.data.description}
             meta={fmt(e.data.pubDate)}
           />
         ))}
