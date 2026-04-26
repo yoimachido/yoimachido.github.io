@@ -9,3 +9,14 @@ export const copy = {
   shelfLabel: "宵町堂の棚",
   shelfShort: "町棚",
 } as const;
+
+// works.category（content.config.ts の z.enum と同期）の読者向けラベル。
+// 詳細ページの breadcrumb で内部 enum 文字列が露出しないようにする。
+// 未知のキーが来ても落ちないよう、参照側で fallback を取る前提（`label[category] ?? category`）。
+export const categoryLabel: Record<string, string> = {
+  'short-story': '短編',
+  'visual': 'ビジュアル',
+  'web': 'Web',
+  'zine': 'zine',
+  'other': 'その他',
+};

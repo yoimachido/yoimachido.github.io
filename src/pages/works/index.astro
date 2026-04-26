@@ -8,7 +8,14 @@ import { getCollection } from 'astro:content';
 const entries = (await getCollection('works', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 
-const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
+// 日付の表示ルール:
+// - short-story は読みもの扱いで pubDate を表に出さない（内部保持はする）
+// - visual / web / zine / other は時系列の意味が残る可能性があるので日付を出す
+const dateMeta = (category: string, d: Date) =>
+  category === 'short-story' ? undefined : fmt(d);
 ---
 <BaseLayout title="Works — 宵町堂">
   <section style="padding-block: var(--space-section-y);">
@@ -28,7 +35,8 @@ const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart
             href={`/works/${e.id}/`}
             kind="works"
             title={e.data.title}
-            meta={fmt(e.data.pubDate)}
+            description={e.data.description}
+            meta={dateMeta(e.data.category, e.data.pubDate)}
           />
         ))}
       </div>

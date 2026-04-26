@@ -1,12 +1,13 @@
 ---
 interface Props {
   href: string;
-  kind: string;     // "works" | "labs" | "notes"
+  kind: string;          // "works" | "labs" | "notes"
   title: string;
-  meta?: string;    // 例: "短編 / 2026.04"
+  meta?: string;         // 例: "2026.05.14"
+  description?: string;  // 任意。あれば 2 行に truncate して表示
 }
 
-const { href, kind, title, meta } = Astro.props;
+const { href, kind, title, meta, description } = Astro.props;
 ---
 <a
   href={href}
@@ -27,5 +28,21 @@ const { href, kind, title, meta } = Astro.props;
   <p style="margin: 0 0 0.25rem; font-size: 0.9375rem; color: var(--color-ink);">
     {title}
   </p>
+  {description && (
+    <p
+      style="
+        margin: 0.25rem 0 0.5rem;
+        font-size: 0.8125rem;
+        line-height: 1.55;
+        color: var(--color-muted);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      "
+    >
+      {description}
+    </p>
+  )}
   {meta && <p class="mono" style="margin: 0;">{meta}</p>}
 </a>
