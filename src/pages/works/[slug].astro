@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { copy } from '../../copy/ja';
+import { copy, categoryLabel } from '../../copy/ja';
 
 export async function getStaticPaths() {
   const entries = await getCollection('works', ({ data }) => !data.draft);
@@ -22,7 +22,7 @@ const fmt = (d: Date) =>
   <article style="padding-block: var(--space-section-y); max-width: var(--reading-max);">
     <header style="margin-bottom: 2rem;">
       <p class="mono" style="margin: 0 0 0.75rem; letter-spacing: 0.08em; color: var(--color-subtle);">
-        works / {category}{series ? ` · ${series}` : ''}
+        works / {categoryLabel[category] ?? category}{series ? ` · ${series}` : ''}
       </p>
       <h1 style="margin: 0 0 0.5rem;">{title}</h1>
       {/* short-story は読みものとして出すため pubDate を表に出さない（内部保持はする）。
