@@ -25,9 +25,13 @@ const fmt = (d: Date) =>
         works / {category}{series ? ` · ${series}` : ''}
       </p>
       <h1 style="margin: 0 0 0.5rem;">{title}</h1>
-      <p class="mono" style="margin: 0; color: var(--color-subtle);">
-        {fmt(pubDate)}{updatedDate ? ` · updated ${fmt(updatedDate)}` : ''}
-      </p>
+      {/* short-story は読みものとして出すため pubDate を表に出さない（内部保持はする）。
+          visual / web / zine / other は時系列が意味を持つ可能性があるので従来どおり表示。 */}
+      {category !== 'short-story' && (
+        <p class="mono" style="margin: 0; color: var(--color-subtle);">
+          {fmt(pubDate)}{updatedDate ? ` · updated ${fmt(updatedDate)}` : ''}
+        </p>
+      )}
     </header>
 
     <div>

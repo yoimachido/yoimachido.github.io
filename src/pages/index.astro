@@ -11,13 +11,20 @@ const notes = await getCollection('notes', ({ data }) => !data.draft);
 type Kind = 'works' | 'labs' | 'notes';
 const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`;
 
+// 日付の表示ルール:
+// - works/short-story は読みもの扱いで pubDate を表に出さない（内部保持はする）
+// - works の他カテゴリ（visual / web / zine / other）と labs / notes は従来どおり表示
+//   → 詳細は CONTENT_GUIDE.md / DEVLOG（後続）参照
 const items = [
-  ...works.map(e => ({ id: e.id, kind: 'works' as Kind, title: e.data.title, description: e.data.description, pubDate: e.data.pubDate })),
-  ...labs.map(e => ({ id: e.id, kind: 'labs' as Kind, title: e.data.title, description: e.data.description, pubDate: e.data.pubDate })),
-  ...notes.map(e => ({ id: e.id, kind: 'notes' as Kind, title: e.data.title, description: e.data.description, pubDate: e.data.pubDate })),
+  ...works.map(e => ({ id: e.id, kind: 'works' as Kind, title: e.data.title, description: e.data.description, category: e.data.category as string | undefined, pubDate: e.data.pubDate })),
+  ...labs.map(e => ({ id: e.id, kind: 'labs' as Kind, title: e.data.title, description: e.data.description, category: undefined as string | undefined, pubDate: e.data.pubDate })),
+  ...notes.map(e => ({ id: e.id, kind: 'notes' as Kind, title: e.data.title, description: e.data.description, category: undefined as string | undefined, pubDate: e.data.pubDate })),
 ]
   .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
   .slice(0, 6);
+
+const showDate = (it: typeof items[number]) =>
+  !(it.kind === 'works' && it.category === 'short-story');
 ---
 <BaseLayout>
   <section style="padding-block: var(--space-hero-y) var(--space-section-y);">
@@ -46,7 +53,7 @@ const items = [
             kind={it.kind}
             title={it.title}
             description={it.description}
-            meta={fmt(it.pubDate)}
+            meta={showDate(it) ? fmt(it.pubDate) : undefined}
           />
         ))}
       </div>
