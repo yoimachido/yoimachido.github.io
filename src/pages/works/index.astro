@@ -2,11 +2,23 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import EntryCard from '../../components/EntryCard.astro';
 import EmptyState from '../../components/EmptyState.astro';
-import { copy } from '../../copy/ja';
+import { copy, categoryLabel, seriesGroupLabel } from '../../copy/ja';
 import { getCollection } from 'astro:content';
 
-const entries = (await getCollection('works', ({ data }) => !data.draft))
+const allEntries = (await getCollection('works', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+
+// seriesKey でグループ化。
+// allEntries は pubDate 降順ソート済みなので、Map の insertion order が
+// 「そのグループの最新 pubDate が新しい順」= グループ表示順になる。
+// seriesKey が未定義の作品は '_other' グループに集約する。
+const groupMap = new Map<string, typeof allEntries>();
+for (const e of allEntries) {
+  const key = e.data.seriesKey ?? '_other';
+  if (!groupMap.has(key)) groupMap.set(key, []);
+  groupMap.get(key)!.push(e);
+}
+const groups = [...groupMap.entries()];
 
 const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
@@ -16,6 +28,14 @@ const fmt = (d: Date) =>
 // - visual / web / zine / other は時系列の意味が残る可能性があるので日付を出す
 const dateMeta = (category: string, d: Date) =>
   category === 'short-story' ? undefined : fmt(d);
+
+// グループ見出し: "{カテゴリ} / {シリーズ区分}" の形式。例) "短編 / 民俗怪異"
+// seriesKey が未定義（'_other'）の場合はカテゴリ名のみ表示する。
+const groupHeading = (key: string, category: string): string => {
+  const cat = categoryLabel[category] ?? category;
+  if (key === '_other') return cat;
+  return `${cat} / ${seriesGroupLabel[key] ?? 'その他'}`;
+};
 ---
 <BaseLayout title="Works — 宵町堂">
   <section style="padding-block: var(--space-section-y);">
@@ -26,18 +46,29 @@ const dateMeta = (category: string, d: Date) =>
   </section>
 
   <section>
-    {entries.length === 0 ? (
+    {allEntries.length === 0 ? (
       <EmptyState title={copy.emptyWorks.title} sub={copy.emptyWorks.sub} />
     ) : (
-      <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
-        {entries.map(e => (
-          <EntryCard
-            href={`/works/${e.id}/`}
-            kind="works"
-            title={e.data.title}
-            description={e.data.description}
-            meta={dateMeta(e.data.category, e.data.pubDate)}
-          />
+      <div style="display: flex; flex-direction: column; gap: 2.5rem;">
+        {groups.map(([key, items]) => (
+          <div>
+            <p
+              class="mono"
+              style="margin: 0 0 0.875rem; font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--color-subtle); padding-bottom: 0.625rem; border-bottom: 0.5px solid var(--color-border);"
+            >
+              {groupHeading(key, items[0].data.category)}
+            </p>
+            <div style="display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+              {items.map(e => (
+                <EntryCard
+                  href={`/works/${e.id}/`}
+                  title={e.data.title}
+                  description={e.data.description}
+                  meta={dateMeta(e.data.category, e.data.pubDate)}
+                />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     )}

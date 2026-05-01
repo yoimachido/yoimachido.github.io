@@ -1,7 +1,7 @@
 ---
 interface Props {
   href: string;
-  kind: string;          // "works" | "labs" | "notes"
+  kind?: string;         // optional: 省略時は上部ラベルを出さない（/works/ 内など）
   title: string;
   meta?: string;         // 例: "2026.05.14"
   description?: string;  // 任意。あれば 2 行に truncate して表示
@@ -19,12 +19,14 @@ const { href, kind, title, meta, description } = Astro.props;
     background: var(--color-surface);
   "
 >
-  <p
-    class="mono"
-    style="margin: 0 0 0.375rem; text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--color-subtle);"
-  >
-    {kind}
-  </p>
+  {kind && (
+    <p
+      class="mono"
+      style="margin: 0 0 0.375rem; text-transform: uppercase; font-size: 0.6875rem; letter-spacing: 0.08em; color: var(--color-subtle);"
+    >
+      {kind}
+    </p>
+  )}
   <p style="margin: 0 0 0.25rem; font-size: 0.9375rem; color: var(--color-ink);">
     {title}
   </p>

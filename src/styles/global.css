@@ -93,6 +93,90 @@ p { margin: 0 0 1rem; }
   padding-inline: var(--space-gutter);
 }
 
+/* ============================================================
+   Prose — 記事本文スタイル（works / notes / labs 詳細ページ共通）
+   <div class="prose"> で囲った Markdown 変換後 HTML に適用。
+   ============================================================ */
+
+.prose {
+  line-height: 1.85;
+}
+
+/* 段落 */
+.prose p {
+  margin: 0 0 1.35rem;
+}
+
+/* 見出し: h2 はセクション区切り、h3 はより控えめに */
+.prose h2 {
+  margin: 2.5rem 0 0.875rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.prose h3 {
+  margin: 1.875rem 0 0.625rem;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+/* リスト */
+.prose ul,
+.prose ol {
+  margin: 0 0 1.35rem;
+  padding-left: 1.5rem;
+}
+.prose li {
+  margin-bottom: 0.45rem;
+  line-height: 1.8;
+}
+.prose li p { margin: 0; }
+
+/* 引用 */
+.prose blockquote {
+  margin: 1.5rem 0;
+  padding: 0 0 0 1.25rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-muted);
+}
+.prose blockquote p { margin-bottom: 0; }
+
+/* 強調 — 太すぎず浮きすぎず */
+.prose strong { font-weight: 600; }
+
+/* インラインコード */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-surface-sub);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* コードブロック */
+.prose pre {
+  margin: 1.35rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--color-surface-sub);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* 水平線 — 短編の場面転換などで使う */
+.prose hr {
+  margin: 2.5rem 0;
+  border: none;
+  border-top: 0.5px solid var(--color-border);
+}
+
 /* 行灯ドット — 現在地・更新あり・小さなアクセント用 */
 .lantern-dot {
   display: inline-block;
