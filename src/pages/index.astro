@@ -15,13 +15,19 @@ const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart
 // - works/short-story は読みもの扱いで pubDate を表に出さない（内部保持はする）
 // - works の他カテゴリ（visual / web / zine / other）と labs / notes は従来どおり表示
 //   → 詳細は CONTENT_GUIDE.md / DEVLOG（後続）参照
-const items = [
+const allSorted = [
   ...works.map(e => ({ id: e.id, kind: 'works' as Kind, title: e.data.title, description: e.data.description, category: e.data.category as string | undefined, pubDate: e.data.pubDate })),
   ...labs.map(e => ({ id: e.id, kind: 'labs' as Kind, title: e.data.title, description: e.data.description, category: undefined as string | undefined, pubDate: e.data.pubDate })),
   ...notes.map(e => ({ id: e.id, kind: 'notes' as Kind, title: e.data.title, description: e.data.description, category: undefined as string | undefined, pubDate: e.data.pubDate })),
-]
-  .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
-  .slice(0, 6);
+].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+
+// top-6 に非works が1件もない場合のみ、最新の非works を末尾1枚に差し替える
+let items = allSorted.slice(0, 6);
+const hasNonWorks = items.some(it => it.kind !== 'works');
+if (!hasNonWorks) {
+  const pinned = allSorted.find(it => it.kind !== 'works');
+  if (pinned) items = [...items.slice(0, 5), pinned];
+}
 
 const showDate = (it: typeof items[number]) =>
   !(it.kind === 'works' && it.category === 'short-story');
