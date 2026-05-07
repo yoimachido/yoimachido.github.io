@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import EmptyState from '../../components/EmptyState.astro';
 import { copy } from '../../copy/ja';
+import { shelfItems } from '../../data/shelf';
 ---
 <BaseLayout title={`${copy.shelfLabel} — 宵町堂`}>
   <section style="padding-block: var(--space-section-y); max-width: var(--reading-max);">
@@ -15,6 +15,64 @@ import { copy } from '../../copy/ja';
   </section>
 
   <section style="padding-block: var(--space-section-y);">
-    <EmptyState title={copy.emptyShelf.title} sub={copy.emptyShelf.sub} />
+    <ul style="list-style: none; margin: 0; padding: 0; display: grid; gap: 1.5rem;">
+      {shelfItems.map((item) => (
+        <li>
+          <article style="
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            padding: 1.5rem 1.75rem;
+          ">
+            <p class="mono" style="
+              margin: 0 0 0.5rem;
+              font-size: 0.72rem;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: var(--color-subtle);
+            ">{item.category}</p>
+
+            <h2 style="
+              margin: 0 0 0.25rem;
+              font-family: var(--font-display);
+              font-size: 1.15rem;
+              font-weight: 400;
+              color: var(--color-fg, inherit);
+            ">{item.title}</h2>
+
+            <p class="mono" style="
+              margin: 0 0 1rem;
+              font-size: 0.8rem;
+              color: var(--color-muted);
+            ">{item.author}</p>
+
+            <p style="
+              margin: 0;
+              padding-left: 1rem;
+              border-left: 2px solid var(--color-accent-lantern);
+              color: var(--color-muted);
+              line-height: 1.75;
+              font-size: 0.9rem;
+            ">{item.comment}</p>
+
+            {item.url && (
+              <p style="margin: 0.875rem 0 0;">
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mono"
+                  style="
+                    font-size: 0.78rem;
+                    color: var(--color-subtle);
+                    text-decoration: none;
+                    border-bottom: 1px solid var(--color-border);
+                  "
+                >→ 外部リンク</a>
+              </p>
+            )}
+          </article>
+        </li>
+      ))}
+    </ul>
   </section>
 </BaseLayout>
